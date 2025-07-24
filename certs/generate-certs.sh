@@ -40,6 +40,7 @@ openssl req -new -key server.key -out server.csr -config server.csr.conf
 
 # 3. Sign server cert with CA
 cat <<EOF > server.ext
+[ server_ext ]
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
 keyUsage = digitalSignature, keyEncipherment
@@ -55,12 +56,12 @@ EOF
 openssl x509 -req -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial \
   -out server.crt -days 3650 -extensions server_ext -extfile server.ext
 
-# Copy to certs folder
+# Copy certs into server/ for Docker and ca.crt for webhook config
 cp server.crt "${CERTDIR}/server/cert.pem"
 cp server.key "${CERTDIR}/server/key.pem"
 cp ca.crt "${CERTDIR}/ca.crt"
 
-# Print base64 version of CA cert for webhook config
+# Output base64 version of CA cert for webhook.yaml
 echo ""
 echo "Base64-encoded CA cert (for webhook.yaml caBundle):"
 cat ca.crt | base64 | tr -d '\n'

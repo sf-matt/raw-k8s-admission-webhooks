@@ -15,13 +15,13 @@ spec:
     spec:
       containers:
         - name: webhook
-          image: <your-image-here>
+          image: sfmatt/webhook-server:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 443
           volumeMounts:
             - name: tls-certs
-              mountPath: /app
+              mountPath: /app/certs
               readOnly: true
       volumes:
         - name: tls-certs
